@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Second Room · A map for the mind</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon1.ico">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ffffff;
+      font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      color: #1e1e2a;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* splash screen (initial loading overlay) */
+    .splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+      pointer-events: none;
+    }
+    .splash-content {
+      text-align: center;
+      max-width: 280px;
+      padding: 2rem;
+    }
+    .splash-logo {
+      font-size: 3rem;
+      font-weight: 350;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+      color: #2c3e4e;
+    }
+    .splash-text {
+      font-size: 0.9rem;
+      color: #5b6e7c;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+    }
+    .splash.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* main layout */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem 1.5rem;
+    }
+
+    /* header / intro */
+    .site-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid #eef2f5;
+      padding-bottom: 2rem;
+    }
+    .site-title {
+      font-size: 2.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #1f3b4c 0%, #2c5a6e 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .tagline {
+      font-size: 1.15rem;
+      color: #3a5b6e;
+      font-weight: 380;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .intro-note {
+      background-color: #fefaf0;
+      border-left: 4px solid #d97a2b;
+      padding: 1.2rem 1.8rem;
+      margin: 2rem 0 2.5rem 0;
+      border-radius: 18px;
+      font-size: 1rem;
+      color: #1f3848;
+      text-align: left;
+    }
+    .skip-help {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
+    .skip-help a {
+      font-size: 0.85rem;
+      color: #bc6c25;
+      text-decoration: none;
+      border: 1px solid #f0cfb0;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      transition: 0.2s;
+    }
+    .skip-help a:hover {
+      background: #fef2e8;
+    }
+
+    /* headings */
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 500;
+      margin: 2rem 0 1rem 0;
+      padding-bottom: 0.25rem;
+      border-bottom: 2px solid #e9edf2;
+      letter-spacing: -0.2px;
+    }
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin: 1.5rem 0 0.75rem 0;
+      color: #2c4b5e;
+    }
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 1.5rem 0 1rem 0;
+    }
+    .card {
+      background: #fefefe;
+      border: 1px solid #eef2f8;
+      border-radius: 24px;
+      padding: 1.3rem 1.5rem;
+      flex: 1 1 240px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      transition: 0.1s ease;
+    }
+    .card strong {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 0.6rem;
+      color: #1f3b4c;
+    }
+    .insight-block {
+      background: #fefaf5;
+      border-radius: 28px;
+      padding: 1.6rem 2rem;
+      margin: 2rem 0;
+      border: 1px solid #ffe8cf;
+    }
+    .env-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .env-card {
+      background: #f9f9fc;
+      border-radius: 20px;
+      padding: 1rem 1.3rem;
+      flex: 1 1 200px;
+      border-left: 4px solid #8aaec0;
+    }
+    .footnote {
+      font-size: 0.85rem;
+      color: #6c818f;
+      border-top: 1px solid #e6edf2;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      text-align: center;
+    }
+    .image-placeholder {
+      background: #f4f9fe;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin: 1.8rem 0;
+      text-align: center;
+      border: 1px solid #bfd7e5;
+    }
+    .image-placeholder img {
+      max-width: 100%;
+      border-radius: 16px;
+      margin-bottom: 0.75rem;
+    }
+    .button-simple {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #cbdde6;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      text-decoration: none;
+      color: #2c5a6e;
+      cursor: pointer;
+    }
+    .button-simple:hover {
+      background: #eef4f9;
+      border-color: #8aaec0;
+    }
+    hr {
+      margin: 2rem 0;
+      border: none;
+      height: 1px;
+      background: #eef2f5;
+    }
+    @media (max-width: 640px) {
+      .container {
+        padding: 1.2rem 1.2rem 3rem 1.2rem;
+      }
+      .site-title {
+        font-size: 1.9rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- splash screen -->
+<div class="splash" id="splashScreen">
+  <div class="splash-content">
+    <div class="splash-logo">🚪☁️</div>
+    <div class="splash-text">the second room · a space to breathe</div>
+  </div>
+</div>
+
+<main class="container">
+  
+  <!-- skip to help button -->
+  <div class="skip-help">
+    <a href="#crisis-help">📞 Need help right now? →</a>
+  </div>
+
+  <div class="site-header">
+    <h1 class="site-title">The Second Room</h1>
+    <div class="tagline">A quiet map for when your mind feels too loud</div>
+    <div class="intro-note">
+      <p style="font-size: 1.1rem; margin-bottom: 0.75rem;"><strong>If you're feeling overwhelmed, stuck in thoughts you don't want, or like your mind is a mess you can't organize...</strong></p>
+      <p>You're not broken. You're not weak. You're probably just <strong>stuck in one room of your brain</strong>—and no one ever showed you there's another one.</p>
+      <p style="margin-top: 1rem;">I'm not a doctor or neuroscientist. Just someone who paid attention. If you stay with me for 5 minutes, you might see your mind differently. That's all.</p>
+    </div>
+  </div>
+
+  <!-- 1. The parallel universe & two rooms -->
+  <h2>⚡ The parallel universe</h2>
+  <p>Music, sports, propaganda, rituals — they all speak directly to a deep, fast part of your brain. That part is powerful, alive, and can feel like <strong>the only reality</strong>. It's not bad. But it's not the whole story.</p>
+  <div class="card-grid">
+    <div class="card"><strong>🎭 Limbic system</strong> — gas pedal. Fear, pleasure, bonding, urgency. Feels like truth, moves fast.</div>
+    <div class="card"><strong>🧠 Prefrontal cortex</strong> — steering wheel & brakes. Choice, delay, long-term view, awareness.</div>
+  </div>
+  <p>Most people live mostly in one room and don't know the other exists. The goal is not to kill emotion — it's to <strong>hold the switch</strong>.</p>
+
+  <div class="image-placeholder">
+    <img src="limbic-system.png" alt="Diagram of the limbic system showing amygdala, hippocampus, nucleus accumbens, and prefrontal cortex">
+    <div style="font-size:0.8rem; color:#5b6e7c;">▲ The limbic system (emotional brain) and prefrontal cortex (the observer)</div>
+  </div>
+
+  <h2>🌀 The trap: why feelings keep coming back</h2>
+  <p>You've heard "feelings are temporary". True — but they <strong>return</strong>. Without awareness, recurrence feels like permanence. You think: <em>"I'm back where I started"</em>. But that's just your brain revisiting a well-worn path.</p>
+  <div class="insight-block">
+    <strong>✨ The insight:</strong> feelings return. That doesn't mean you're broken — it means your brain has neural highways. The difference between suffering and mastery is <strong>recognizing the return</strong> without panic, and self-correcting.
+  </div>
+
+  <h2>🏞️ Two kinds of environments</h2>
+  <p>We live in a society where some environments let you survive using the limbic system alone. Others demand the prefrontal cortex. This explains so much — why some people never "need" to change, and others are forced to adapt.</p>
+  <div class="env-list">
+    <div class="env-card"><strong>🌊 Limbic-sufficient</strong><br>Intense tribal bonds, repetitive work, constant entertainment, trauma-saturated settings — no need for long-term planning.</div>
+    <div class="env-card"><strong>⚙️ Prefrontal-required</strong><br>Complex problem solving, strategic roles, information-dense work, silence — you must self-regulate.</div>
+  </div>
+  <p>Most people believe their own environment is <em>normal</em>. That's why perspectives clash so hard.</p>
+
+  <h2>🔁 The loop & the switch</h2>
+  <p>You can train your brain, just like metabolism: the more you practice shifting from emotional-automatic to aware-observer, the easier it gets.</p>
+  <ul style="margin: 1rem 0 1rem 1.6rem;">
+    <li><strong>Without awareness:</strong> feeling returns → "nothing changed" → despair → limbic deepens.</li>
+    <li><strong>With awareness:</strong> feeling returns → "ah, this old pathway" → recognition → prefrontal strengthens.</li>
+  </ul>
+
+  <div class="image-placeholder">
+    <img src="two-states.png" alt="Illustration showing two brain states: reactive vs reflective, or emotional recurrence vs awareness">
+    <div style="font-size:0.8rem; color:#5b6e7c;">▲ With awareness, recurrence becomes recognizable — not permanent.</div>
+  </div>
+
+  <h2>🕯️ How to practice the switch</h2>
+  <p>Small, concrete steps. No need to become a monk.</p>
+  <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+    <li><strong>Abstain</strong> — choose one thing (music, news, social media, background noise) for 24–48 hours.</li>
+    <li><strong>Notice the discomfort</strong> — restlessness? boredom? that's your limbic system asking for input.</li>
+    <li><strong>Sit in silence</strong> — 5–10 minutes. Let the prefrontal cortex hum.</li>
+    <li><strong>Return with choice</strong> — go back to music or whatever you love, but this time notice: <em>you are entering the parallel universe, not being taken by it.</em></li>
+  </ol>
+  <p>Repeat. Over time, switching becomes fluid. You keep the passion, but you hold the reins.</p>
+
+  <!-- 4. crisis help section (with anchor) -->
+  <h2>🕊️ If you're carrying too much</h2>
+  <div id="crisis-help" style="background: #fef2e8; border-radius: 28px; padding: 1.8rem; margin: 1.8rem 0 1.2rem 0; border: 1px solid #ffe0c0;">
+    <p style="font-size: 1.05rem; line-height: 1.5;"><strong>Dear you,</strong><br>
+    I'm not going to tell you "it gets better" because I don't know your story. What I can tell you is this: the pain you're feeling is real, but it lives in a part of your brain that doesn't have language — it screams without words. The fact that you're reading these sentences <strong>means another part of you is still online</strong>: the observer, the one who can wait, who can choose, who can stay.</p>
+    <p>Feelings return — but that doesn't mean you are back at zero. The room you're in right now is not the only room. There is a second room, and you can find the door step by step. You don't have to feel better today. Just stay. And maybe come back here tomorrow.</p>
+    
+    <p style="margin-top: 1.5rem; margin-bottom: 0.5rem;"><strong>📞 If you need to talk to someone right now:</strong></p>
+    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+      <li><strong>UK:</strong> <a href="https://www.samaritans.org/" target="_blank" style="color:#bc6c25;">Samaritans</a> — Call <strong>116 123</strong> (free, 24/7)</li>
+      <li><strong>UK (CALM):</strong> <a href="https://www.thecalmzone.net/" target="_blank" style="color:#bc6c25;">Campaign Against Living Miserably</a> — Call <strong>0800 58 58 58</strong> (5pm–midnight)</li>
+      <li><strong>UK (Crisis Text Line):</strong> Text <strong>"SHOUT"</strong> to <strong>85258</strong></li>
+      <li><strong>US:</strong> <a href="https://988lifeline.org/" target="_blank" style="color:#bc6c25;">988 Suicide & Crisis Lifeline</a> — Call or text <strong>988</strong></li>
+      <li><strong>Other countries:</strong> Visit <a href="https://www.befrienders.org/" target="_blank" style="color:#bc6c25;">Befrienders Worldwide</a> to find a local helpline</li>
+    </ul>
+    
+    <p style="font-size:0.9rem; margin-top:0.5rem;">This site is not a replacement for professional care. But it's here as a companion.</p>
+  </div>
+
+  <h2>🎭 The regulators: music, religion, sports, media</h2>
+  <p>All these tools influence the limbic system — sometimes beautifully, sometimes to control. Awareness doesn't mean rejecting them. It means seeing them clearly.</p>
+  <div class="card-grid">
+    <div class="card"><strong>🎵 Music</strong><br>Reward, trance, time distortion — a parallel universe.</div>
+    <div class="card"><strong>⛪ Religion</strong><br>Ritual, awe, moral weight — ancient limbic regulation.</div>
+    <div class="card"><strong>⚽ Sports / propaganda</strong><br>Tribal bonding, rhythmic emotional spikes.</div>
+  </div>
+  <p>Once you see how they work, you can choose to engage — or step back.</p>
+
+  <h2>🌿 The environment test (no scores, just gentle questions)</h2>
+  <ul style="margin-left: 1.5rem;">
+    <li>Do you need music or noise to be alone with your thoughts?</li>
+    <li>Do you make most decisions based on how you feel <em>right now</em> vs. a plan you made earlier?</li>
+    <li>Can you sit in silence for 10 minutes without strong discomfort?</li>
+    <li>When a strong emotion returns, do you believe you're "back to square one"?</li>
+  </ul>
+  <p>These aren't pass/fail. They are signposts. The more you notice, the more you can navigate between the two rooms.</p>
+
+  <div class="image-placeholder">
+    <img src="prefrontal-limbic.png" alt="Diagram showing the connection between prefrontal cortex and limbic system — gas pedal and steering wheel">
+    <div style="font-size:0.8rem; color:#5b6e7c;">▲ The prefrontal cortex doesn't replace emotion — it regulates it.</div>
+  </div>
+
+  <hr>
+  <div style="background-color: #fafdff; border-radius: 20px; padding: 1.2rem; margin: 1rem 0;">
+    <p><strong>✧ Last thing — the returning feeling</strong><br>
+    You might think: "I understood that feelings are temporary, but they keep coming back — maybe they never left?"<br>
+    No. They left, then reappeared. The neural pathway is still there. That's not failure, that's biology. Awareness lets you say: <em>"Oh, this again. I know how to move through this."</em> That small shift changes everything.</p>
+  </div>
+
+  <div class="footnote">
+    the second room · created with care from lived experience · you are not your limbic system<br>
+    🧭 <a href="#" class="button-simple" id="shareButton" style="margin-top: 10px; display: inline-block;">share the map</a>    🧾 <a href="#" class="button-simple" id="backToTop" style="display: inline-block;">back to top</a>
+  </div>
+</main>
+
+<script>
+  // splash screen auto-hide
+  window.addEventListener('load', function() {
+    const splash = document.getElementById('splashScreen');
+    if (splash) {
+      setTimeout(() => {
+        splash.classList.add('hide');
+      }, 800);
+    }
+  });
+
+  // back to top
+  document.getElementById('backToTop').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // share functionality
+  document.getElementById('shareButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (navigator.share) {
+      navigator.share({
+        title: 'The Second Room',
+        text: 'A quiet map for when your mind feels too loud',
+        url: window.location.href
+      }).catch(() => {});
+    } else {
+      // fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard');
+    }
+  });
+</script>
+</body>
+</html>
